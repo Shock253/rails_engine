@@ -1,4 +1,4 @@
-require_relative "../../db/seeders/world_seed"
+require_relative "../../db/world_seed"
 
 namespace :seed do
   namespace :csv do
