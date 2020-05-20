@@ -16,6 +16,7 @@ gem 'figaro'
 gem 'factory_bot_rails'
 gem 'faker'
 gem 'active_model_serializers'
+gem 'activerecord-import'
 
 group :test do
   gem 'webmock'
