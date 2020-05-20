@@ -30,4 +30,19 @@ RSpec.describe 'Merchant API request: ' do
     expect(merchant['data']['id']).to eq("#{id}")
     expect(merchant['data']['attributes'].keys).to contain_exactly('name')
   end
+
+  it "Create" do
+    merchant_params = { "name" => "Scumpus\' Bait and Tackle" }
+
+    post '/api/v1/merchants', params: merchant_params
+
+    expect(response).to be_successful
+
+    merchant = JSON.parse(response.body)
+
+    expect(merchant.keys).to contain_exactly('data')
+    expect(merchant['data'].keys).to contain_exactly('id', 'type', 'attributes')
+    expect(merchant['data']['attributes'].keys).to contain_exactly('name')
+    expect(merchant['data']['attributes']['name']).to eq("Scumpus\' Bait and Tackle")
+  end
 end
