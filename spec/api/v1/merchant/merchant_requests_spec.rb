@@ -66,5 +66,23 @@ RSpec.describe 'Merchant API request: ' do
     expect(merchant_response['data']['attributes']['name']).to eq("Scumpus\' Bait and Tackle")
   end
 
+  it "Destroy" do
+    merchant = create(:merchant)
 
+    expect{ delete "/api/v1/merchants/#{merchant.id}" }.to change(Merchant, :count).by(-1)
+
+    expect(response).to be_success
+    expect{Merchant.find(merchant.id)}.to raise_error(ActiveRecord::RecordNotFound)
+  end
+
+  it "Merchant Items" do
+    merchant = create(:merchant) do |merchant|
+      10.times do
+        merchant.items.create(attributes_for(:item))
+      end
+    end
+
+    # binding.pry
+
+  end
 end
