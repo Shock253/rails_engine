@@ -8,12 +8,12 @@ RSpec.describe 'Merchant API request: ' do
 
     expect(response).to be_successful
 
-    merchants = JSON.parse(response.body)
+    merchants_response = JSON.parse(response.body)
 
-    expect(merchants.keys).to contain_exactly('data')
-    expect(merchants['data'].length).to eq(3)
-    expect(merchants['data'][0].keys).to contain_exactly('id', 'type', 'attributes')
-    expect(merchants['data'][0]['attributes'].keys).to contain_exactly('name')
+    expect(merchants_response.keys).to contain_exactly('data')
+    expect(merchants_response['data'].length).to eq(3)
+    expect(merchants_response['data'][0].keys).to contain_exactly('id', 'type', 'attributes')
+    expect(merchants_response['data'][0]['attributes'].keys).to contain_exactly('name')
   end
 
   it "Show" do
@@ -23,12 +23,12 @@ RSpec.describe 'Merchant API request: ' do
 
     expect(response).to be_successful
 
-    merchant = JSON.parse(response.body)
+    merchant_response = JSON.parse(response.body)
 
-    expect(merchant.keys).to contain_exactly('data')
-    expect(merchant['data'].keys).to contain_exactly('id', 'type', 'attributes')
-    expect(merchant['data']['id']).to eq("#{id}")
-    expect(merchant['data']['attributes'].keys).to contain_exactly('name')
+    expect(merchant_response.keys).to contain_exactly('data')
+    expect(merchant_response['data'].keys).to contain_exactly('id', 'type', 'attributes')
+    expect(merchant_response['data']['id']).to eq("#{id}")
+    expect(merchant_response['data']['attributes'].keys).to contain_exactly('name')
   end
 
   it "Create" do
@@ -38,11 +38,33 @@ RSpec.describe 'Merchant API request: ' do
 
     expect(response).to be_successful
 
-    merchant = JSON.parse(response.body)
+    merchant_response = JSON.parse(response.body)
 
-    expect(merchant.keys).to contain_exactly('data')
-    expect(merchant['data'].keys).to contain_exactly('id', 'type', 'attributes')
-    expect(merchant['data']['attributes'].keys).to contain_exactly('name')
-    expect(merchant['data']['attributes']['name']).to eq("Scumpus\' Bait and Tackle")
+    expect(merchant_response.keys).to contain_exactly('data')
+    expect(merchant_response['data'].keys).to contain_exactly('id', 'type', 'attributes')
+    expect(merchant_response['data']['attributes'].keys).to contain_exactly('name')
+    expect(merchant_response['data']['attributes']['name']).to eq("Scumpus\' Bait and Tackle")
   end
+
+  it "Update" do
+    previous_name = "Rungo's Beach Bar"
+    id = create(:merchant, name: previous_name).id
+    merchant_params = { "name" => "Scumpus\' Bait and Tackle" }
+
+    put "/api/v1/merchants/#{id}", params: merchant_params
+
+    expect(response).to be_successful
+
+    merchant_resource = Merchant.find_by(id: id)
+    merchant_response = JSON.parse(response.body)
+
+    expect(merchant_resource.name).to eq("Scumpus\' Bait and Tackle")
+    expect(merchant_response.keys).to contain_exactly('data')
+    expect(merchant_response['data'].keys).to contain_exactly('id', 'type', 'attributes')
+    expect(merchant_response['data']['attributes'].keys).to contain_exactly('name')
+    expect(merchant_response['data']['attributes']['name']).to_not eq("Rungo's Beach Bar")
+    expect(merchant_response['data']['attributes']['name']).to eq("Scumpus\' Bait and Tackle")
+  end
+
+
 end
